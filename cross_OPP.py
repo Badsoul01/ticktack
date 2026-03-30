@@ -1,6 +1,7 @@
 import random
 import os
 import time
+from operator import index
 from turtledemo.clock import setup
 
 
@@ -9,22 +10,34 @@ class Board:
     def __init__(self,size,win_size):
         self.win_size = win_size
         self.size = size
-        self.rows = [[ " "] * size  for _ in range(size)]
+        self.rows = [[" "] * size  for _ in range(size)]
 
     def display(self):
         RED = "\033[91m"
         BLUE = "\033[94m"
         RESET = "\033[0m"
-        for line in self.rows:
+        print("    ", end="")
+
+        # f"{x:4}" — Rezervuje 4 místa, zarovná doprava
+        #  f"{x:<4}" — Rezervuje 4 místa, zarovná doleva.
+        # f"{x:^4}" — Rezervuje 4 místa, zarovná na střed.
+        for x in range(1,self.size+1):
+            print(f"{x:^4}",end="")
+        print()
+        for i, line in  enumerate(self.rows):
+            print(f"{i+1:2} ",end="")
+
             for place in line:
                 if place == "X":
                     print(f"| {RED}{place}{RESET} ", end="")
                 elif place == "O":
                     print(f"| {BLUE}{place}{RESET} ", end="")
                 else:
+
                     print(f"| {place} ", end="")
+
             print("|")
-            print("-" * (self.size * 4 + 1))
+            print("    " + "-" * (self.size * 4 + 1))
 
     def make_move(self,souradnice_x,souradnice_y, symbol):
         try:
@@ -175,7 +188,7 @@ class GameManager:
             print()
             print()
             self.board.display()
-            print(f"Hraje {current_player.name} ")
+            print(f"Hraje {current_player.name} se symbolem {current_player.symbol}")
             x,y =current_player.get_move(self.board)
             uspech = self.board.make_move(x, y, current_player.symbol)
             if not uspech:
